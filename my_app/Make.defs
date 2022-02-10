@@ -1,0 +1,4 @@
+
+ifneq ($(CONFIG_EXAMPLES_MY_APP),)
+CONFIGURED_APPS += my_app
+endif
