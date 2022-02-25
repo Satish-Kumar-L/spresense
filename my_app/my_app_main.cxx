@@ -1760,6 +1760,8 @@ extern "C" int main(int argc, FAR char *argv[])
 
   /* convert the image data to datatype this tflm_runtime_t expects */
 int hash[19];
+int lastPred = -2;
+int currentPred = -1;
 while (true)
 {
 
@@ -1823,6 +1825,8 @@ while (true)
       maxPred = i;
     }
     printf("max pred : %d iter: %d\n",maxPred , a);
+  
+    
     hash[maxPred] += 1;
     //sleep(0.1);
   }
@@ -1834,10 +1838,17 @@ while (true)
     min = l;
   }
   printf("after 50 runs , most predicted : %s : %d" , predictions[min] , min);
+ currentPred = min;
+  if(lastPred == currentPred)
+    continue;
+   else
+   {
   audioSetup();
     call_audio(predictions[min]);
     sleep(0.2);
     audioEnd();
+    lastPred  = currentPred;
+   }
   
 }
 
