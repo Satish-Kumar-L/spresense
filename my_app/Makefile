@@ -1,0 +1,39 @@
+
+include $(APPDIR)/Make.defs
+include $(SDKDIR)/Make.defs
+
+PROGNAME = $(CONFIG_EXAMPLES_MY_APP_PROGNAME)
+PRIORITY = $(CONFIG_EXAMPLES_MY_APP_PRIORITY)
+STACKSIZE = $(CONFIG_EXAMPLES_MY_APP_STACKSIZE)
+MODULE = $(CONFIG_EXAMPLES_MY_APP)
+
+ASRCS =
+CSRCS = loader_tflite.c model.c 
+MAINSRC = my_app_main.cxx
+
+AUDIODIR = $(SDKDIR)$(DELIM)modules$(DELIM)audio
+
+CXXFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" "$(AUDIODIR)"}
+ifeq ($(CONFIG_EXAMPLES_AUDIO_PLAYER_USEPOSTPROC),y)
+CXXFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" "worker$(DELIM)userproc$(DELIM)include"}
+endif
+
+CXXFLAGS += -D_POSIX
+CXXFLAGS += -DUSE_MEMMGR_FENCE
+CXXFLAGS += -DATTENTION_USE_FILENAME_LINE
+
+include $(APPDIR)/Application.mk
+
+ifeq ($(CONFIG_EXAMPLES_AUDIO_PLAYER_USEPOSTPROC),y)
+
+build_worker:
+	$(Q) $(MAKE) -C worker TOPDIR="$(TOPDIR)" SDKDIR="$(SDKDIR)" APPDIR="$(APPDIR)" CROSSDEV=$(CROSSDEV)
+
+$(OBJS): build_worker
+
+clean_worker:
+	@$(MAKE) -C worker TOPDIR="$(TOPDIR)" SDKDIR="$(SDKDIR)" APPDIR="$(APPDIR)" CROSSDEV=$(CROSSDEV) clean
+
+clean:: clean_worker
+
+endif

@@ -1,0 +1,57 @@
+
+config EXAMPLES_MY_APP
+	tristate "my_app app"
+	default y
+	---help---
+		Enable the my_app app
+
+if EXAMPLES_MY_APP
+
+choice
+	prompt "Output device selection"
+	default EXAMPLES_MY_APP_OUTPUT_DEV_SPHP
+	---help---
+		Set the device type of output to use
+
+config EXAMPLES_MY_APP_OUTPUT_DEV_SPHP
+	bool "Speaker/Headphone output"
+
+config EXAMPLES_MY_APP_OUTPUT_DEV_I2S
+	bool "I2S output"
+endchoice
+
+choice
+	prompt "player mode selection"
+	default EXAMPLES_MY_APP_MODE_NORMAL
+	---help---
+		Set the operation mode of player capability.
+		To play include Hi-Res file, select Hi-Res mode.
+		If it is not Hi-Res file, select Normal mode.
+
+config EXAMPLES_MY_APP_MODE_NORMAL
+	bool "Normal mode"
+
+config EXAMPLES_MY_APP_MODE_HIRES
+	bool "Hi-Res mode"
+endchoice
+
+config EXAMPLES_MY_APP_USEPOSTPROC
+    bool "Use Posstprocess"
+    default n
+
+config EXAMPLES_MY_APP_PROGNAME
+	string "Program name"
+	default "my_app"
+	---help---
+		This is the name of the program that will be use when the NSH ELF
+		program is installed.
+
+config EXAMPLES_MY_APP_PRIORITY
+	int "my_app task priority"
+	default 150
+
+config EXAMPLES_MY_APP_STACKSIZE
+	int "my_app stack size"
+	default 8192
+
+endif
